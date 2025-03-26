@@ -1,0 +1,82 @@
+// src/locales/fr.ts
+import type { AppTranslations } from './en'; // Import type from 'en'
+
+export const fr: AppTranslations = {
+    langCode: 'fr',
+    langName: 'Français',
+    nav: {
+        introduction: 'Introduction',
+        decode: 'Décoder (Simulation)',
+    },
+    language: {
+        viewWebsiteIn: 'Voir ce site en',
+    },
+    meta: {
+        titleBase: 'Info NISS Belge',
+        titleIntro: 'Introduction',
+        titleDecode: 'Simulation de Décodage',
+        titleNotFound: 'Non Trouvé',
+    },
+    home: {
+        title: 'Le Numéro NISS Belge',
+        subtitle: 'Comprendre le numéro d\'identification national unique (NISS) utilisé en Belgique à des fins de sécurité sociale et d\'identification.',
+        tryDecoder: 'Essayer le Décodeur (Simulation)',
+        whatIsTitle: 'Qu\'est-ce que le NISS?',
+        whatIsP1: 'Le <strong class="font-semibold">NISS</strong> (Numéro d\'identification de la sécurité sociale), souvent appelé numéro de Registre National, est un numéro unique à 11 chiffres attribué à chaque personne inscrite au Registre National belge.',
+        whatIsP2: 'Il est crucial pour les interactions avec les institutions de sécurité sociale, les prestataires de soins de santé, les employeurs et les agences gouvernementales.',
+        structureTitle: 'Structure (AAMMJJ-SSS-CC)',
+        structureYYMMDD: '<strong class="font-semibold">AAMMJJ:</strong> Représente la date de naissance (Année, Mois, Jour).',
+        structureNote: 'Remarque: Pour les personnes nées avant 2000, un «numéro bis» peut impliquer l\'ajout de 20 ou 40 au mois pour l\'unicité ou des cas spécifiques (par exemple, les travailleurs étrangers).',
+        structureSSS: '<strong class="font-semibold">SSS:</strong> Un numéro de série. La parité (impair/pair) indique le genre (Impair pour Masculin, Pair pour Féminin) au moment de l\'attribution.',
+        structureCC: '<strong class="font-semibold">CC:</strong> Une somme de contrôle à deux chiffres, calculée sur la base des 9 chiffres précédents (ou 11 chiffres pour les numéros attribués après 2000 en utilisant le modulo 97).',
+        importanceTitle: 'Importance et Utilisation',
+        importanceLi1: 'Identification pour les prestations de sécurité sociale (chômage, pension, assurance maladie).',
+        importanceLi2: 'Utilisé par les employeurs pour la paie et les déclarations (par exemple, la déclaration Dimona).',
+        importanceLi3: 'Requis pour les services de soins de santé (via la carte eID ou la carte ISI+).',
+        importanceLi4: 'Identifiant principal sur la carte d\'identité électronique belge (eID).',
+        importanceLi5: 'Utilisé dans l\'administration fiscale (impôt sur le revenu des personnes physiques).',
+        privacyTitle: 'Confidentialité et Sécurité',
+        privacyWarning: 'À manipuler avec précaution!',
+        privacyP1: 'Le numéro NISS (numéro de Registre National) est une donnée personnelle sensible. Il est directement lié à l\'identité d\'un individu et contient des informations comme la date de naissance et l\'indicateur de genre.',
+        privacyP2: 'La collecte, le traitement ou le partage non autorisés de ce numéro sont strictement réglementés par les lois sur la protection de la vie privée (comme le RGPD).',
+        privacyP3: '<strong class="block">Ne partagez jamais votre numéro NISS inutilement ou sur des sites web non fiables ou via des canaux non sécurisés.</strong>',
+    },
+    decode: {
+        title: 'Décodeur NISS (Simulation)',
+        disclaimerTitle: 'Avertissement Important:',
+        disclaimerP1: 'Cette page fournit une <strong class="underline">simulation</strong> à des fins éducatives uniquement. Elle démontre la structure *potentielle* d\'un numéro NISS.',
+        disclaimerP2: 'Elle ne se connecte <strong class="uppercase">pas</strong> à une base de données officielle, n\'effectue <strong class="uppercase">pas</strong> de validation réelle (y compris la somme de contrôle), et ne traite <strong class="uppercase">pas</strong> de données personnelles réelles. Les informations affichées (date de naissance, genre) sont <strong class="underline">génériques et simulées</strong>, basées uniquement sur le format d\'entrée, pas sur des données réelles.',
+        disclaimerP3: '<strong>N\'entrez PAS de vrais numéros NISS ici si vous êtes préoccupé par la confidentialité, bien qu\'aucune donnée ne soit stockée ou transmise par cette simulation.</strong>',
+        formLabel: 'Entrez le numéro NISS (par ex., 930518-223-41)',
+        formPlaceholder: 'AAMMJJ-SSS-CC',
+        buttonText: 'Simuler le Décodage',
+        resultsTitle: 'Résultats Simulés:',
+        resultsInput: 'Valeur d\'Entrée',
+        resultsFormatCheck: 'Vérification du Format',
+        resultsBirthDate: 'Date de Naissance Simulée',
+        resultsGender: 'Genre Simulé (selon Séq.)',
+        resultsSequence: 'Séquence Simulée',
+        resultsChecksum: 'Somme de Contrôle Simulée',
+        resultsFormatOk: '<span class="text-green-600 font-semibold">Format Correct</span>',
+        resultsFormatInvalid: '<span class="text-red-600 font-semibold">Invalide</span>',
+        resultsChecksumValid: '<span class="text-green-600 font-semibold">Valide (Simulé)</span>',
+        resultsChecksumInvalid: '<span class="text-red-600 font-semibold">Invalide (Simulé)</span>',
+        resultsReminder: 'Rappel: Ce sont des données illustratives basées uniquement sur le format.',
+        errorInvalidFormat: 'Format invalide. Doit être 11 chiffres (par ex., AAMMJJ-SSS-CC).',
+    },
+    footer: {
+        copyright: '© {year} Info NISS Belge. Tous droits réservés.',
+        informational: 'Ce site est uniquement à titre informatif.',
+        simulationWarning: 'La page \'Décoder\' est une simulation et ne traite pas de vrais numéros NISS.',
+    },
+    notFound: {
+        title: 'Page Non Trouvée',
+        subtitle: 'Désolé, la page que vous recherchez n\'existe pas.',
+        goHome: 'Retour à l\'Accueil',
+    },
+    common: {
+        male: 'Masculin (Simulé)',
+        female: 'Féminin (Simulé)',
+        notAvailable: 'N/D', // Non disponible
+    }
+};

@@ -1,0 +1,20 @@
+{
+  "name": "insz.be",
+  "type": "module",
+  "scripts": {
+    "dev": "bunx --bun vite",
+    "build": "bunx --bun vite build",
+    "start": "bun run ./dist/index.js"
+  },
+  "dependencies": {
+    "@hono/node-server": "^1.14.0",
+    "hono": "^4.7.5",
+    "twind": "^0.16.19",
+    "vite": "^6.2.3"
+  },
+  "devDependencies": {
+    "@hono/vite-build": "^1.4.0",
+    "@hono/vite-dev-server": "^0.19.0",
+    "@types/bun": "latest"
+  }
+}
