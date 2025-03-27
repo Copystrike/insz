@@ -5,7 +5,7 @@ export const en = {
     langName: 'English',
     nav: {
         introduction: 'Introduction',
-        decode: 'Decode (Simulation)',
+        decode: 'Decode',
     },
     language: {
         viewWebsiteIn: 'View this website in',
@@ -19,7 +19,7 @@ export const en = {
     home: {
         title: 'The Belgian INSZ Number', // Changed
         subtitle: 'Understanding the unique national identification number (INSZ) used in Belgium for social security and identification purposes.', // Changed
-        tryDecoder: 'Try the Decoder (Simulation)',
+        tryDecoder: 'Try the Decoder',
         whatIsTitle: 'What is the INSZ?', // Changed
         // Removed INSS mention, clarified INSZ meaning
         whatIsP1: 'The <strong class="font-semibold">INSZ</strong> (Identificatienummer van de Sociale Zekerheid / Numéro d\'identification de la sécurité sociale), often called the National Register number, is a unique 11-digit number assigned to every person registered in Belgium\'s National Register.',
@@ -43,7 +43,7 @@ export const en = {
         privacyP3: '<strong class="block">Never share your INSZ number unnecessarily or on untrusted websites or via insecure channels.</strong>', // Updated wording
     },
     decode: {
-        title: 'INSZ Decoder (Simulation)', // Changed
+        title: 'INSZ Decoder', // Changed
         disclaimerTitle: 'Important Disclaimer:',
         // Removed INSS mention
         disclaimerP1: 'This page provides a <strong class="underline">simulation</strong> for educational purposes only. It demonstrates the *potential* structure of an INSZ number.',

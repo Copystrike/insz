@@ -32,13 +32,13 @@ const LanguageSwitcher: FC<LanguageSwitcherProps> = ({ lang, currentPath, t }) =
     );
 
     return (
-        <div className="text-sm py-2 px-4 bg-gray-100 text-gray-700 text-center">
+        <div className={tw`text-sm py-2 px-4 bg-gray-100 text-gray-700 text-center`}>
             {t ? t('language.viewWebsiteIn') : 'Bekijk deze website in het'} {' '}
             {otherLanguages.map((langInfo, index) => (
                 <span key={langInfo.code}>
                     <a
                         href={getLangSwitchUrl(langInfo.code)}
-                        className="font-medium text-blue-600 hover:underline"
+                        className={tw`font-medium text-blue-600 hover:underline`}
                         aria-label={`Switch to ${langInfo.name}`}
                         title={`Switch to ${langInfo.name}`}
                     >

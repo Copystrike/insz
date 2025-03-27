@@ -2,13 +2,15 @@
   "name": "insz.be",
   "type": "module",
   "scripts": {
-    "dev": "bunx --bun vite",
-    "build": "bunx --bun vite build",
+    "dev": "bunx --bun vite dev",
+    "build": "bunx --bun vite build --mode client && bunx --bun vite build --mode server",
     "start": "bun run ./dist/index.js"
   },
   "dependencies": {
     "@hono/node-server": "^1.14.0",
+    "@tailwindcss/vite": "^4.0.17",
     "hono": "^4.7.5",
+    "tailwindcss": "^4.0.17",
     "twind": "^0.16.19",
     "vite": "^6.2.3"
   },

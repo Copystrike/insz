@@ -6,7 +6,7 @@ export const nl: AppTranslations = {
     langName: 'Nederlands',
     nav: {
         introduction: 'Introductie',
-        decode: 'Decoderen (Simulatie)',
+        decode: 'Decoderen',
     },
     language: {
         viewWebsiteIn: 'Bekijk deze website in het',
@@ -20,7 +20,7 @@ export const nl: AppTranslations = {
     home: {
         title: 'Het Belgische INSZ-nummer', // Consistent title
         subtitle: 'Begrijp het unieke nationale identificatienummer (INSZ / rijksregisternummer) dat in België wordt gebruikt voor sociale zekerheid en identificatiedoeleinden.', // Updated subtitle
-        tryDecoder: 'Probeer de Decoder (Simulatie)',
+        tryDecoder: 'Probeer de Decoder',
         whatIsTitle: 'Wat is het INSZ?', // Consistent title
         // Updated description, focus on INSZ/Rijksregisternummer
         whatIsP1: 'Het <strong class="font-semibold">INSZ</strong> (Identificatienummer van de Sociale Zekerheid), vaak <strong class="font-semibold">rijksregisternummer</strong> genoemd, is een uniek 11-cijferig nummer dat wordt toegekend aan elke persoon die in België is ingeschreven in het Rijksregister.',
@@ -44,7 +44,7 @@ export const nl: AppTranslations = {
         privacyP3: '<strong class="block">Deel uw INSZ-nummer nooit onnodig of op onbetrouwbare websites of via onbeveiligde kanalen.</strong>', // Updated wording
     },
     decode: {
-        title: 'INSZ Decoder (Simulatie)', // Consistent title
+        title: 'INSZ Decoder', // Consistent title
         disclaimerTitle: 'Belangrijke Vrijwaring:',
         // Updated disclaimer text
         disclaimerP1: 'Deze pagina biedt een <strong class="underline">simulatie</strong> enkel voor educatieve doeleinden. Het demonstreert de *mogelijke* structuur van een INSZ-nummer.',

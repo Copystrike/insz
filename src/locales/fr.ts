@@ -6,7 +6,7 @@ export const fr: AppTranslations = {
     langName: 'Français',
     nav: {
         introduction: 'Introduction',
-        decode: 'Décoder (Simulation)',
+        decode: 'Décoder',
     },
     language: {
         viewWebsiteIn: 'Voir ce site en',
@@ -20,7 +20,7 @@ export const fr: AppTranslations = {
     home: {
         title: 'Le Numéro NISS Belge',
         subtitle: 'Comprendre le numéro d\'identification national unique (NISS) utilisé en Belgique à des fins de sécurité sociale et d\'identification.',
-        tryDecoder: 'Essayer le Décodeur (Simulation)',
+        tryDecoder: 'Essayer le Décodeur',
         whatIsTitle: 'Qu\'est-ce que le NISS?',
         whatIsP1: 'Le <strong class="font-semibold">NISS</strong> (Numéro d\'identification de la sécurité sociale), souvent appelé numéro de Registre National, est un numéro unique à 11 chiffres attribué à chaque personne inscrite au Registre National belge.',
         whatIsP2: 'Il est crucial pour les interactions avec les institutions de sécurité sociale, les prestataires de soins de santé, les employeurs et les agences gouvernementales.',
@@ -42,7 +42,7 @@ export const fr: AppTranslations = {
         privacyP3: '<strong class="block">Ne partagez jamais votre numéro NISS inutilement ou sur des sites web non fiables ou via des canaux non sécurisés.</strong>',
     },
     decode: {
-        title: 'Décodeur NISS (Simulation)',
+        title: 'Décodeur NISS',
         disclaimerTitle: 'Avertissement Important:',
         disclaimerP1: 'Cette page fournit une <strong class="underline">simulation</strong> à des fins éducatives uniquement. Elle démontre la structure *potentielle* d\'un numéro NISS.',
         disclaimerP2: 'Elle ne se connecte <strong class="uppercase">pas</strong> à une base de données officielle, n\'effectue <strong class="uppercase">pas</strong> de validation réelle (y compris la somme de contrôle), et ne traite <strong class="uppercase">pas</strong> de données personnelles réelles. Les informations affichées (date de naissance, genre) sont <strong class="underline">génériques et simulées</strong>, basées uniquement sur le format d\'entrée, pas sur des données réelles.',

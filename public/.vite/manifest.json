@@ -1,0 +1,11 @@
+{
+  "src/client.tsx": {
+    "file": "assets/client-B-fqLbYz.js",
+    "name": "client",
+    "src": "src/client.tsx",
+    "isEntry": true,
+    "css": [
+      "assets/client-BoVORZau.css"
+    ]
+  }
+}

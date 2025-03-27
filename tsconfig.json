@@ -7,7 +7,9 @@
     "moduleResolution": "bundler",
     "module": "ESNext",
     "types": [
-      "bun-types"
+      "bun-types",
+      "DOM",
+      "vite/client"
     ],
   }
 }

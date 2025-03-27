@@ -1,5 +1,4 @@
 import { Hono, Next } from 'hono';
-import { serveStatic } from 'hono/bun';
 import type { Context } from 'hono';
 import { jsxRenderer } from "hono/jsx-renderer";
 
@@ -14,8 +13,8 @@ import Layout from './views/layout';
 import HomePage from './pages/home-page';
 import DecodePage from './pages/decode-page';
 import NotFoundPage from './pages/not-found-page';
-import { virtualSheet, setup } from 'twind/shim/server';
-
+import { virtualSheet } from 'twind/shim/server';
+import { serveStatic } from '@hono/node-server/serve-static';
 
 // Define types for Hono context variables
 type HonoVariables = {
@@ -24,49 +23,52 @@ type HonoVariables = {
   t: TFunction;
 };
 
-
-
-
 export const twindVirtualSheet = virtualSheet();
-
-
-setup({
-  darkMode: 'class',
-  hash: true,
-  preflight: true,
-  theme: {
-    extend: {
-      minHeight: {
-        'screen': '100vh',
-      }
-    },
-  },
-  sheet: twindVirtualSheet,
-});
-
-console.log('Virtual sheet created');
-
 const app = new Hono<{ Variables: HonoVariables; }>();
+
+// public folder
+app.use('/assets/*', serveStatic({ root: './public' }));
 
 // before page rendering call console.log('Before rendering page');
 app.use((_, next) => {
   twindVirtualSheet.reset();
-  console.log('Virtual sheet reset');
   return next();
 });
 
-app.use(jsxRenderer()); // Enable JSX rendering
+app.use(jsxRenderer(
+  ({ children }, c) => {
+
+    const lang = c.get('lang');
+    const t = c.get('t');
+    const currentPath = c.req.path;
+
+    return (
+      <Layout t={t} lang={lang} currentPath={currentPath} titleKey="meta.titleIntro">
+        {children}
+      </Layout>
+    );
+  },
+  {
+    docType: true
+  }
+));
 
 // 2. Language Middleware
 app.use('/:lang/*', async (c: Context<{ Variables: HonoVariables; }>, next: Next) => {
+  // Skip language processing for asset paths
+  if (c.req.path.startsWith('/assets/') || c.req.path.startsWith('/src/') || c.req.path.startsWith('/public/') || c.req.path.startsWith('/dist/')) {
+    console.log('Skipping language processing for asset path');
+    return next();
+  }
+
   let lang = c.req.param('lang');
 
   // Validate language code
   if (!supportedLangCodes.includes(lang)) {
     lang = defaultLanguage; // Fallback to default
     // Optional: Redirect to the default language URL if the code was invalid
-    // const path = c.req.path.substring(c.req.param('lang').length + 1); // Get path after lang code
-    // return c.redirect(`/${lang}${path || '/'}`, 302);
+    const path = c.req.path.substring(c.req.param('lang').length + 1); // Get path after lang code
+    return c.redirect(`/${lang}${path || ''}`, 302);
   }
 
   // Load translations dynamically (or use direct imports if preferred)
@@ -95,12 +97,10 @@ app.get('/', (c) => {
 app.get('/:lang', async (c) => {
   const lang = c.get('lang');
   const t = c.get('t');
-  const currentPath = c.req.path;
-  const content = <Layout t={t} lang={lang} currentPath={currentPath} titleKey="meta.titleIntro" virtualSheet={twindVirtualSheet}>
-    <HomePage t={t} lang={lang} />
-  </Layout>;
 
-  return c.render(content);
+  return c.render(
+    <HomePage t={t} lang={lang} />
+  );
 });
 
 
@@ -108,38 +108,31 @@ app.get('/:lang', async (c) => {
 app.get('/:lang/decode', (c) => {
   const lang = c.get('lang');
   const t = c.get('t');
-  const currentPath = c.req.path;
 
   const inszInput = c.req.query('insz'); // Changed query param name for consistency
 
   return c.render(
-    <Layout t={t} lang={lang} currentPath={currentPath} titleKey="meta.titleDecode" virtualSheet={twindVirtualSheet}>
-      <DecodePage t={t} lang={lang} inputValue={inszInput} />
-    </Layout>
+    <DecodePage t={t} lang={lang} inputValue={inszInput} />
   );
 });
+
 
 // --- 404 Not Found Handler --- (Keep as is)
 app.notFound((c) => {
   let lang = c.get('lang') ?? defaultLanguage;
   let t = c.get('t');
-  const currentPath = c.req.path;
+
   if (!t) {
     const translations = lang === 'nl' ? nl : en;
     t = createT(translations);
   }
-  const basePath = supportedLangCodes.includes(currentPath.split('/')[1])
-    ? `/${currentPath.split('/')[1]}`
-    : `/${lang}`;
+
   return c.html(
-    <Layout t={t} lang={lang} currentPath={basePath} titleKey="meta.titleNotFound" virtualSheet={twindVirtualSheet}>
-      <NotFoundPage t={t} lang={lang} />
-    </Layout>,
+    <NotFoundPage t={t} lang={lang} />,
     404
   );
 });
 
-// --- Export ---
 export default app;
 
 console.log(`Hono server running on http://localhost:3000 (Default lang: ${defaultLanguage})`);

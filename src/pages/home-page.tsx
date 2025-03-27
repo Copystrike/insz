@@ -2,7 +2,7 @@ import type { FC } from 'hono/jsx';
 import Card from '../components/card';
 import type { TFunction } from '../utils/i18n';
 import { Tml } from '../utils/i18n'; // Import Tml for HTML content
-import {  twindVirtualSheet } from '..';
+import { twindVirtualSheet } from '..';
 import { create } from 'twind';
 
 interface HomePageProps {
