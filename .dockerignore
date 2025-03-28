@@ -1,0 +1,29 @@
+# .dockerignore
+
+# Node modules (installed inside the container)
+node_modules
+
+# Build artifacts (generated inside the container)
+dist
+public # If you have a top-level public dir that's *not* src/public
+coverage
+*.log
+
+# Git files
+.git
+.gitignore
+
+# Docker files
+Dockerfile
+.dockerignore
+
+# Environment files (should be injected, not built-in)
+.env*
+*.env
+
+# IDE / OS specific
+.vscode
+.idea
+*.iml
+Thumbs.db
+.DS_Store

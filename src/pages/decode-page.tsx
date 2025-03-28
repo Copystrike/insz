@@ -1,4 +1,3 @@
-// src/pages/DecodePage.tsx
 import type { FC } from 'hono/jsx';
 import type { TFunction } from '../utils/i18n';
 import { Tml } from '../utils/i18n';
@@ -24,11 +23,8 @@ const DecodePage: FC<DecodePageProps> = ({ t, lang, inputValue = '' }) => {
             </h1>
 
             {/* --- DISCLAIMER --- */}
-            <div className={tw`bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-8 rounded-md max-w-5xl mx-auto`} role="alert">
-                <p className={tw`font-bold`}>{t('decode.disclaimerTitle')}</p>
-                {Tml(t, 'decode.disclaimerP1')}
-                <div className={tw`mt-2`}>{Tml(t, 'decode.disclaimerP2')}</div>
-                <div className={tw`mt-2`}>{Tml(t, 'decode.disclaimerP3')}</div>
+            <div className={tw`bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-8 rounded-md max-w-5xl mx-auto`} role="alert">
+                <p>{Tml(t, 'decode.disclaimer')}</p>
             </div>
             {/* --- END DISCLAIMER --- */}
 

@@ -9,68 +9,63 @@ export const nl: AppTranslations = {
         decode: 'Decoderen',
     },
     language: {
-        viewWebsiteIn: 'Bekijk deze website in het',
+        viewWebsiteIn: 'Bekijk deze website in',
     },
     meta: {
-        titleBase: 'Belgische INSZ Info', // Consistent title
+        titleBase: 'INSZ', // Changed
         titleIntro: 'Introductie',
         titleDecode: 'Decodeer Simulatie',
         titleNotFound: 'Niet Gevonden',
     },
     home: {
-        title: 'Het Belgische INSZ-nummer', // Consistent title
-        subtitle: 'Begrijp het unieke nationale identificatienummer (INSZ / rijksregisternummer) dat in België wordt gebruikt voor sociale zekerheid en identificatiedoeleinden.', // Updated subtitle
+        title: 'Het Belgische INSZ-nummer', // Changed
+        subtitle: 'Begrijp het unieke nationale identificatienummer (INSZ) dat in België wordt gebruikt voor sociale zekerheid en identificatiedoeleinden.', // Changed
         tryDecoder: 'Probeer de Decoder',
-        whatIsTitle: 'Wat is het INSZ?', // Consistent title
-        // Updated description, focus on INSZ/Rijksregisternummer
-        whatIsP1: 'Het <strong class="font-semibold">INSZ</strong> (Identificatienummer van de Sociale Zekerheid), vaak <strong class="font-semibold">rijksregisternummer</strong> genoemd, is een uniek 11-cijferig nummer dat wordt toegekend aan elke persoon die in België is ingeschreven in het Rijksregister.',
+        whatIsTitle: 'Wat is het INSZ?', // Changed
+        // Removed INSS mention, clarified INSZ meaning - translated
+        whatIsP1: 'Het <strong class="font-semibold">INSZ</strong> (Identificatienummer van de Sociale Zekerheid / Numéro d\'identification de la sécurité sociale), vaak het Rijksregisternummer genoemd, is een uniek 11-cijferig nummer dat wordt toegekend aan elke persoon die is ingeschreven in het Belgische Rijksregister.',
         whatIsP2: 'Het is cruciaal voor interacties met socialezekerheidsinstellingen, zorgverleners, werkgevers en overheidsinstanties.',
-        structureTitle: 'Structuur (JJMMDD-SSS-CC)',
-        structureYYMMDD: '<strong class="font-semibold">JJMMDD:</strong> Vertegenwoordigt de geboortedatum (Jaar, Maand, Dag).',
-        structureNote: 'Opmerking: Voor personen geboren vóór 2000, kan een \'bisnummer\' het toevoegen van 20 of 40 aan de maand inhouden voor uniciteit of specifieke gevallen (bv. buitenlandse werknemers).', // Clarified bis number
-        structureSSS: '<strong class="font-semibold">SSS:</strong> Een volgnummer (reeksnummer). De pariteit (oneven/even) geeft het geslacht aan (Oneven voor Man, Even voor Vrouw) bij de geboorte/toekenning.',
-        structureCC: '<strong class="font-semibold">CC:</strong> Een controlegetal van twee cijfers, berekend op basis van de voorgaande 9 cijfers (of 11 cijfers voor nummers toegekend na 2000 via modulo 97).', // Clarified checksum
+        structureTitle: 'Structuur (JJMMDD-SSS-CC)', // Changed YY to JJ (Jaar)
+        structureYYMMDD: '<strong class="font-semibold">JJMMDD:</strong> Vertegenwoordigt de geboortedatum (Jaar, Maand, Dag).', // Changed YY to JJ
+        structureNote: 'Opmerking: Voor personen geboren vóór 2000 kan een \'bis\'-nummer inhouden dat 20 of 40 bij de maand wordt opgeteld voor uniciteit of specifieke gevallen (bv. buitenlandse werknemers).', // Clarified bis number context slightly - translated
+        structureSSS: '<strong class="font-semibold">SSS:</strong> Een volgnummer. De pariteit (oneven/even) geeft het geslacht aan (Oneven voor Man, Even voor Vrouw) op het moment van toekenning.',
+        structureCC: '<strong class="font-semibold">CC:</strong> Een controlegetal van twee cijfers, berekend op basis van de voorgaande 9 cijfers (of 11 cijfers voor nummers toegekend na 2000 via modulo 97).', // Clarified checksum calculation basis - translated
         importanceTitle: 'Belang en Gebruik',
         importanceLi1: 'Identificatie voor socialezekerheidsuitkeringen (werkloosheid, pensioen, ziekteverzekering).',
-        importanceLi2: 'Gebruikt door werkgevers voor loonadministratie en Dimona-aangifte.', // Added Dimona
+        importanceLi2: 'Gebruikt door werkgevers voor loonadministratie en aangiften (bv. Dimona-aangifte).', // Added Dimona example - translated
         importanceLi3: 'Vereist voor gezondheidszorgdiensten (via de eID-kaart of ISI+-kaart).',
         importanceLi4: 'Primaire identificator op de Belgische elektronische identiteitskaart (eID).',
-        importanceLi5: 'Gebruikt in de belastingadministratie (personenbelasting).', // Clarified tax
-        privacyTitle: 'Privacy en Veiligheid',
-        privacyWarning: 'Ga er voorzichtig mee om!',
-        // Updated privacy text
-        privacyP1: 'Het INSZ-nummer / rijksregisternummer zijn gevoelige persoonsgegevens. Het is direct gekoppeld aan de identiteit van een individu en bevat informatie zoals geboortedatum en geslachtsaanduiding.',
-        privacyP2: 'Ongeautoriseerde verzameling, verwerking of deling van dit nummer is strikt gereguleerd door privacywetten zoals de GDPR/AVG (Algemene Verordening Gegevensbescherming).',
-        privacyP3: '<strong class="block">Deel uw INSZ-nummer nooit onnodig of op onbetrouwbare websites of via onbeveiligde kanalen.</strong>', // Updated wording
+        importanceLi5: 'Gebruikt bij de belastingadministratie (personenbelasting).', // Clarified tax context - translated
+        privacyTitle: 'Privacy en Beveiliging',
+        privacyWarning: 'Ga er zorgvuldig mee om!',
+        // Removed INSS mention - translated
+        privacyP1: 'Het INSZ-nummer (Rijksregisternummer) zijn gevoelige persoonsgegevens. Het is direct gekoppeld aan de identiteit van een individu en bevat informatie zoals geboortedatum en geslachtsaanduiding.',
+        privacyP2: 'Ongeoorloofde verzameling, verwerking of deling van dit nummer is strikt gereguleerd door privacywetgeving (zoals GDPR/AVG).', // Added AVG
+        privacyP3: '<strong class="block">Deel uw INSZ-nummer nooit onnodig, op onbetrouwbare websites of via onveilige kanalen.</strong>', // Updated wording - translated
     },
     decode: {
-        title: 'INSZ Decoder', // Consistent title
-        disclaimerTitle: 'Belangrijke Vrijwaring:',
-        // Updated disclaimer text
-        disclaimerP1: 'Deze pagina biedt een <strong class="underline">simulatie</strong> enkel voor educatieve doeleinden. Het demonstreert de *mogelijke* structuur van een INSZ-nummer.',
-        disclaimerP2: 'Het maakt <strong class="uppercase">geen</strong> verbinding met een officiële database, voert <strong class="uppercase">geen</strong> echte validatie uit (inclusief controlegetal), en verwerkt <strong class="uppercase">geen</strong> echte persoonsgegevens. De weergegeven informatie (geboortedatum, geslacht) is <strong class="underline">algemeen en gesimuleerd</strong>, enkel gebaseerd op het invoerformaat, niet op werkelijke gegevens.',
-        disclaimerP3: '<strong>Voer hier GEEN echte INSZ-nummers in als u bezorgd bent om privacy, hoewel er geen gegevens worden opgeslagen of verzonden door deze simulatie.</strong>',
-        formLabel: 'Voer INSZ-nummer in', // Consistent label
-        formPlaceholder: 'JJMMDD-SSS-CC',
+        title: 'INSZ Decoder',
+        disclaimer: '<strong class="font-semibold">Waarschuwing:</strong> INSZ-nummers zijn gegevens die toegang kunnen geven tot persoonlijke informatie. Wees voorzichtig waar u ze invoert! Wij slaan geen nummers op, alle validatie en decodering gebeurt aan de client-zijde.', // Translated 'client side'
+        formLabel: 'Voer INSZ-nummer in (bv. 930518-223-41)', // Used 'bv.' for 'e.g.'
+        formPlaceholder: 'JJMMDD-SSS-CC', // Changed YY to JJ
         buttonText: 'Simuleer Decodering',
-        resultsTitle: 'Gesimuleerde Resultaten',
+        resultsTitle: 'Gesimuleerde Resultaten:',
         resultsInput: 'Invoerwaarde',
         resultsFormatCheck: 'Formaatcontrole',
         resultsBirthDate: 'Gesimuleerde Geboortedatum',
-        resultsGender: 'Gesimuleerd Geslacht (uit reeks)',
-        resultsSequence: 'Gesimuleerde Reeks',
+        resultsGender: 'Gesimuleerd Geslacht (uit volgnummer)',
+        resultsSequence: 'Gesimuleerd Volgnummer',
         resultsChecksum: 'Gesimuleerd Controlegetal',
         resultsFormatOk: '<span class="text-green-600 font-semibold">Lijkt OK</span>',
         resultsFormatInvalid: '<span class="text-red-600 font-semibold">Ongeldig</span>',
         resultsChecksumValid: '<span class="text-green-600 font-semibold">Geldig (Gesimuleerd)</span>',
         resultsChecksumInvalid: '<span class="text-red-600 font-semibold">Ongeldig (Gesimuleerd)</span>',
-        resultsReminder: 'Herinnering: Dit zijn illustratieve gegevens, enkel gebaseerd op formaat.',
-        errorInvalidFormat: 'Ongeldig formaat. Moet 11 cijfers zijn (bv. JJMMDD-SSS-CC).',
+        resultsReminder: 'Herinnering: Dit zijn illustratieve gegevens, enkel gebaseerd op het formaat.',
+        errorInvalidFormat: 'Ongeldig formaat. Moet 11 cijfers zijn (bv. JJMMDD-SSS-CC).', // Changed YY to JJ
     },
     footer: {
-        copyright: '© {year} Belgische INSZ Info. Alle rechten voorbehouden.', // Consistent copyright
-        informational: 'Deze website is enkel voor informatieve doeleinden.',
-        simulationWarning: 'De \'Decoderen\' pagina is een simulatie en verwerkt geen echte INSZ-nummers.', // Consistent warning
+        copyright: '© {year} Alle Rechten Voorbehouden.', // Changed
+        warning: 'Deze website is uitsluitend bedoeld voor informatieve doeleinden.<br><span class="text-pink-900">Deze website is niet gelieerd aan de Belgische overheid of enige officiële instantie.</span>',
     },
     notFound: {
         title: 'Pagina Niet Gevonden',
@@ -80,6 +75,6 @@ export const nl: AppTranslations = {
     common: {
         male: 'Man (Gesimuleerd)',
         female: 'Vrouw (Gesimuleerd)',
-        notAvailable: 'N/B', // Niet beschikbaar
+        notAvailable: 'N.v.t.', // Standard Dutch abbreviation for N/A
     }
 };

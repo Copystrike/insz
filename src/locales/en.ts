@@ -11,7 +11,7 @@ export const en = {
         viewWebsiteIn: 'View this website in',
     },
     meta: {
-        titleBase: 'Belgian INSZ Info', // Changed
+        titleBase: 'INSZ', // Changed
         titleIntro: 'Introduction',
         titleDecode: 'Decode Simulation',
         titleNotFound: 'Not Found',
@@ -43,14 +43,9 @@ export const en = {
         privacyP3: '<strong class="block">Never share your INSZ number unnecessarily or on untrusted websites or via insecure channels.</strong>', // Updated wording
     },
     decode: {
-        title: 'INSZ Decoder', // Changed
-        disclaimerTitle: 'Important Disclaimer:',
-        // Removed INSS mention
-        disclaimerP1: 'This page provides a <strong class="underline">simulation</strong> for educational purposes only. It demonstrates the *potential* structure of an INSZ number.',
-        disclaimerP2: 'It does <strong class="uppercase">not</strong> connect to any official database, perform real validation (including checksum), or process real personal data. The displayed information (birth date, gender) is <strong class="underline">generic and simulated</strong> based only on the input format, not actual data.',
-        // Removed INSS mention
-        disclaimerP3: '<strong>Do NOT enter real INSZ numbers here if you are concerned about privacy, although no data is stored or transmitted by this simulation.</strong>',
-        formLabel: 'Enter INSZ Number (e.g., 930518-223-41)', // Changed
+        title: 'INSZ Decoder',
+        disclaimer: '<strong class="font-semibold">Warning:</strong> INSZ numbers are credentials that can grant access to personal information. Be careful where you enter them! We do not store any numbers, all validation and decoding is done on the client side.',
+        formLabel: 'Enter INSZ Number (e.g., 930518-223-41)',
         formPlaceholder: 'YYMMDD-SSS-CC',
         buttonText: 'Simulate Decode',
         resultsTitle: 'Simulated Results:',
@@ -68,9 +63,8 @@ export const en = {
         errorInvalidFormat: 'Invalid format. Must be 11 digits (e.g., YYMMDD-SSS-CC).',
     },
     footer: {
-        copyright: '© {year} Belgian INSZ Info. All Rights Reserved.', // Changed
-        informational: 'This website is for informational purposes only.',
-        simulationWarning: 'The \'Decode\' page is a simulation and does not process real INSZ numbers.', // Changed
+        copyright: '© {year} All Rights Reserved.', // Changed
+        warning: 'This website is for informational purposes only.<br><span class="text-pink-900">This website is not affiliated with the Belgian government or any official entity.</span>',
     },
     notFound: {
         title: 'Page Not Found',

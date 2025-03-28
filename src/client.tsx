@@ -1,16 +1,42 @@
 import { StrictMode } from "hono/jsx";
-import { hydrateRoot } from "hono/jsx/dom/client";
+import { createRoot, hydrateRoot } from "hono/jsx/dom/client";
 import { ClientInszDecoder } from "./components/client/decoder.client";
-import './styles.css';
+import './styles.css'
 
-
-const components = {
-    "decode-root": ClientInszDecoder,
+type ComponentRegistration = {
+    id: string;
+    component: any;
 };
 
-Object.entries(components).forEach(([rootId, Component]) => {
-    const root = document.getElementById(rootId);
-    if (!root) return;
+const componentRegistry: ComponentRegistration[] = [
+    {
+        id: "decode-root",
+        component: ClientInszDecoder,
+    },
+];
 
-    hydrateRoot(root, <StrictMode><Component /></StrictMode>);
+// Handle SSR hydration
+componentRegistry.forEach(({ id, component: Component }) => {
+    const ssrElement = document.getElementById(id);
+    if (ssrElement?.dataset.ssr) {
+        hydrateRoot(
+            ssrElement,
+            <StrictMode>
+                <Component />
+            </StrictMode>,
+        );
+    }
+});
+
+// Handle SPA mounting
+componentRegistry.forEach(({ id, component: Component }) => {
+    const spaElement = document.getElementById(id);
+    if (spaElement && !spaElement.dataset.ssr) {
+        const root = createRoot(spaElement);
+        root.render(
+            <StrictMode>
+                <Component />
+            </StrictMode>,
+        );
+    }
 });
