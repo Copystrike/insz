@@ -58,8 +58,8 @@ export const nl: AppTranslations = {
         resultsChecksum: 'Gesimuleerd Controlegetal',
         resultsFormatOk: '<span class="text-green-600 font-semibold">Lijkt OK</span>',
         resultsFormatInvalid: '<span class="text-red-600 font-semibold">Ongeldig</span>',
-        resultsChecksumValid: '<span class="text-green-600 font-semibold">Geldig (Gesimuleerd)</span>',
-        resultsChecksumInvalid: '<span class="text-red-600 font-semibold">Ongeldig (Gesimuleerd)</span>',
+        resultsChecksumValid: '<span class="text-green-600 font-semibold">Geldig</span>',
+        resultsChecksumInvalid: '<span class="text-red-600 font-semibold">Ongeldig</span>',
         resultsReminder: 'Herinnering: Dit zijn illustratieve gegevens, enkel gebaseerd op het formaat.',
         errorInvalidFormat: 'Ongeldig formaat. Moet 11 cijfers zijn (bv. JJMMDD-SSS-CC).', // Changed YY to JJ
     },
@@ -73,8 +73,8 @@ export const nl: AppTranslations = {
         goHome: 'Terug naar Startpagina',
     },
     common: {
-        male: 'Man (Gesimuleerd)',
-        female: 'Vrouw (Gesimuleerd)',
+        male: 'Man',
+        female: 'Vrouw',
         notAvailable: 'N.v.t.', // Standard Dutch abbreviation for N/A
     },
     client: {
@@ -114,7 +114,7 @@ export const nl: AppTranslations = {
             errorDateNotExist: "De datum bestaat niet in de kalender.",
             errorUnknown: "Onbekende validatiefout.",
             enterNumber: "Voer een 9- of 11-cijferig rijksregisternummer in.",
-            decoderTitle: "Decoder Rijksregisternummer / NISS",
+            decoderTitle: "Decoder Rijksregisternummer",
             selectAlgorithm: "Algoritme:",
             unknownCount: "onbekend aantal"
         }

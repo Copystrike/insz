@@ -2,7 +2,6 @@ import { useState, useEffect, useRef, useMemo } from 'hono/jsx';
 import type { DecodedInfo, DecodedInfoResult, InszAlgorithm } from '../../utils/insz-decoder';
 import { simulateDecodeINSZ } from '../../utils/insz-decoder';
 import type { ClientTranslations } from '../../utils/i18n';
-import console from 'console';
 
 interface ClientDecoderProps {
     translations?: ClientTranslations;
@@ -33,27 +32,6 @@ function getPositionSuffix(n: number, locale: string = 'nl'): string {
         }
     }
 }
-
-/**
- * Simple HTML escaping function.
- * @param str The string to escape.
- * @returns The escaped string.
- */
-const escapeHTML = (str: string) => {
-    // Check if running in a browser environment before using DOM elements
-    if (typeof document !== 'undefined') {
-        const div = document.createElement('div');
-        div.textContent = str;
-        return div.innerHTML;
-    }
-    // CORRECTED Fallback for non-browser environments (like SSR)
-    return str
-        .replace(/&/g, "&")
-        .replace(/</g, "<")
-        .replace(/>/g, ">")
-        .replace(/"/g, "\"")
-        .replace(/'/g, "'");
-};
 
 
 // --- ResultContent Component ---
@@ -179,7 +157,7 @@ function ResultContent({ result, translations, locale = 'nl' }: {
         <div className="space-y-3 text-sm text-gray-800 font-mono">
             {/* Input Value */}
             <div className="flex">
-                <span className="font-medium text-gray-900 w-40 sm:w-48 flex-shrink-0">{t('client.decoder.input', "Input:")}:</span>
+                <span className="font-medium text-gray-900 w-40 sm:w-48 flex-shrink-0">{t('client.decoder.input', "Input:")}</span>
                 <span className="break-all">{res.input}</span>
             </div>
 
@@ -187,15 +165,15 @@ function ResultContent({ result, translations, locale = 'nl' }: {
             {res.components && (
                 <>
                     <div className="flex">
-                        <span className="font-medium text-gray-900 w-40 sm:w-48 flex-shrink-0">{t('client.decoder.datePart', "Date Part (YYMMDD):")}:</span>
+                        <span className="font-medium text-gray-900 w-40 sm:w-48 flex-shrink-0">{t('client.decoder.datePart', "Date Part (YYMMDD):")}</span>
                         <span>{res.components.datePart ?? t('common.notAvailable', "N/A")}</span>
                     </div>
                     <div className="flex">
-                        <span className="font-medium text-gray-900 w-40 sm:w-48 flex-shrink-0">{t('client.decoder.sequencePart', "Sequence Number (SSS):")}:</span>
+                        <span className="font-medium text-gray-900 w-40 sm:w-48 flex-shrink-0">{t('client.decoder.sequencePart', "Sequence Number (SSS):")}</span>
                         <span>{res.components.sequencePart ?? t('common.notAvailable', "N/A")}</span>
                     </div>
                     <div className="flex">
-                        <span className="font-medium text-gray-900 w-40 sm:w-48 flex-shrink-0">{t('client.decoder.checksumPart', "Checksum (CC):")}:</span>
+                        <span className="font-medium text-gray-900 w-40 sm:w-48 flex-shrink-0">{t('client.decoder.checksumPart', "Checksum (CC):")}</span>
                         <span>{res.components.checksumPart ?? <span className="text-orange-600">{t('client.decoder.checksumMissing', "Missing")}</span>}</span>
                     </div>
                     <hr className={
@@ -298,10 +276,10 @@ function getAlgorithmDisplayName(algorithmKey: InszAlgorithm, translations?: Cli
 export function InszDecoder({ translations, locale = 'nl' }: ClientDecoderProps) {
     // Serialize the translations and locale as data attributes
     const serializedTranslations = translations ? JSON.stringify(translations) : '';
-    
+
     return (
-        <div 
-            id='decode-root' 
+        <div
+            id='decode-root'
             className="w-full"
             data-ssr="true"
             data-translations={serializedTranslations}
@@ -475,14 +453,14 @@ export function ClientInszDecoder({ translations, locale = 'nl' }: ClientDecoder
                 <div className="bg-white shadow-lg rounded-xl overflow-hidden border border-gray-200 flex flex-col">
                     <div className="bg-gray-50 p-3 border-b border-gray-200">
                         <h2 className="text-lg font-semibold text-gray-800">
-                            {t('client.decoder.decoderTitle', 'Decoder National Register Number / NISS')}
+                            {t('client.decoder.decoderTitle', 'Decoder National Register Number')}
                         </h2>
                     </div>
                     <div className={`p-4 sm:p-6 flex-grow flex flex-col ${resultContainerClass}`}>
                         {/* Relative container for positioning backdrop and textarea */}
                         <div className="relative flex-grow">
                             <label htmlFor="insz-client-textarea" className="sr-only">
-                                {t('client.decoder.decoderTitle', 'Decoder National Register Number / NISS')}
+                                {t('client.decoder.decoderTitle', 'Decoder National Register Number')}
                             </label>
 
                             {/* Background div for displaying colors */}

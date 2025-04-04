@@ -57,8 +57,8 @@ export const en = {
         resultsChecksum: 'Simulated Checksum',
         resultsFormatOk: '<span class="text-green-600 font-semibold">Looks OK</span>',
         resultsFormatInvalid: '<span class="text-red-600 font-semibold">Invalid</span>',
-        resultsChecksumValid: '<span class="text-green-600 font-semibold">Valid (Simulated)</span>',
-        resultsChecksumInvalid: '<span class="text-red-600 font-semibold">Invalid (Simulated)</span>',
+        resultsChecksumValid: '<span class="text-green-600 font-semibold">Valid</span>',
+        resultsChecksumInvalid: '<span class="text-red-600 font-semibold">Invalid</span>',
         resultsReminder: 'Reminder: This is illustrative data based on format only.',
         errorInvalidFormat: 'Invalid format. Must be 11 digits (e.g., YYMMDD-SSS-CC).',
     },
@@ -72,8 +72,8 @@ export const en = {
         goHome: 'Go Back Home',
     },
     common: {
-        male: 'Male (Simulated)',
-        female: 'Female (Simulated)',
+        male: 'Male',
+        female: 'Female',
         notAvailable: 'N/A',
     },
     client: {
@@ -113,7 +113,7 @@ export const en = {
             errorDateNotExist: "The date does not exist in the calendar.",
             errorUnknown: "Unknown validation error.",
             enterNumber: "Enter a 9 or 11-digit national register number.",
-            decoderTitle: "Decoder National Register Number / NISS",
+            decoderTitle: "Decoder National Register Number",
             selectAlgorithm: "Algorithm:",
             unknownCount: "unknown count"
         }

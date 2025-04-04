@@ -2,29 +2,54 @@ import { StrictMode } from "hono/jsx";
 import { createRoot, hydrateRoot } from "hono/jsx/dom/client";
 import { ClientInszDecoder } from "./components/client/decoder.client";
 import './styles.css';
-import type { ClientTranslations } from "./utils/i18n";
 
 type ComponentRegistration = {
     id: string;
     component: any;
 };
 
-// Create a function to extract serialized props from the DOM element
-function getSerializedProps(element: HTMLElement): { translations?: ClientTranslations; locale?: string; } {
+/**
+ * Extract all serialized props from a DOM element's data attributes
+ * This function dynamically extracts any data-* attributes that represent serialized props
+ * and deserializes them into the appropriate JavaScript values.
+ * 
+ * @param element The DOM element containing serialized props in data attributes
+ * @returns An object containing all deserialized props
+ */
+function getSerializedProps(element: HTMLElement): Record<string, any> {
     try {
-        // Look for data attributes containing our serialized props
-        const translationsAttr = element.dataset.translations;
-        const localeAttr = element.dataset.locale;
+        const props: Record<string, any> = {};
 
-        // Parse translations if available
-        const translations = translationsAttr ? JSON.parse(translationsAttr) : undefined;
+        // Get all data attributes
+        const { dataset } = element;
 
-        return {
-            translations,
-            locale: localeAttr || 'en', // Default to 'en' if no locale is provided
-        };
+        // Process each data attribute
+        for (const [key, value] of Object.entries(dataset)) {
+            // Skip the "ssr" attribute as it's not a prop
+            if (key === 'ssr') continue;
+
+            // For each attribute, try to parse JSON if it looks like JSON
+            if (value) {
+                try {
+                    // If the value starts with { or [ it's likely JSON
+                    if ((value.startsWith('{') && value.endsWith('}')) ||
+                        (value.startsWith('[') && value.endsWith(']'))) {
+                        props[key] = JSON.parse(value);
+                    } else {
+                        // Otherwise treat as a regular string
+                        props[key] = value;
+                    }
+                } catch (parseError) {
+                    // If JSON parsing fails, use the raw string value
+                    console.warn(`Failed to parse data-${key} as JSON, using raw value`, parseError);
+                    props[key] = value;
+                }
+            }
+        }
+
+        return props;
     } catch (error) {
-        console.error('Failed to parse serialized props:', error);
+        console.error('Failed to extract serialized props:', error);
         return {};
     }
 }

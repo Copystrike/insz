@@ -8,8 +8,8 @@
     "module": "ESNext",
     "types": [
       "bun-types",
-      "DOM",
+      "node",
       "vite/client"
-    ],
+    ]
   }
 }
