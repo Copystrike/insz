@@ -108,11 +108,17 @@ app.get('/:lang', async (c) => {
 app.get('/:lang/decode', (c) => {
   const lang = c.get('lang');
   const t = c.get('t');
+  const translations = c.get('translations');
 
   const inszInput = c.req.query('insz'); // Changed query param name for consistency
 
   return c.render(
-    <DecodePage t={t} lang={lang} inputValue={inszInput} />
+    <DecodePage 
+      t={t} 
+      lang={lang} 
+      inputValue={inszInput}
+      translations={translations} 
+    />
   );
 });
 

@@ -1,13 +1,12 @@
-// src/components/ClientDecoder.tsx
 import { useState, useEffect, useRef, useMemo } from 'hono/jsx';
-// Assuming these types are correctly defined in the specified path
-import type { DecodedInfo, DecodedInfoResult, DecodedInfoFatalError, InszAlgorithm } from '../../utils/insz-decoder';
-// Assuming this function is correctly defined in the specified path
+import type { DecodedInfo, DecodedInfoResult, InszAlgorithm } from '../../utils/insz-decoder';
 import { simulateDecodeINSZ } from '../../utils/insz-decoder';
+import type { ClientTranslations } from '../../utils/i18n';
+import console from 'console';
 
 interface ClientDecoderProps {
-    // Optional props like locale can be added here if needed
-    // locale?: 'en' | 'nl' | 'fr';
+    translations?: ClientTranslations;
+    locale?: string;
 }
 
 // --- UI Helper Functions ---
@@ -36,23 +35,6 @@ function getPositionSuffix(n: number, locale: string = 'nl'): string {
 }
 
 /**
- * Maps algorithm keys to their user-friendly display names.
- */
-const algorithmDisplayNames: Record<InszAlgorithm, string> = {
-    'auto': 'Automatisch (19xx/20xx)',
-    '19xx': 'Forceer 19xx',
-    '20xx': 'Forceer 20xx',
-};
-
-/**
- * Maps algorithm century keys to simpler names for suggestions.
- */
-const algorithmSuggestionNames: Record<'19xx' | '20xx', string> = {
-    '19xx': '19xx',
-    '20xx': '20xx',
-};
-
-/**
  * Simple HTML escaping function.
  * @param str The string to escape.
  * @returns The escaped string.
@@ -79,21 +61,57 @@ const escapeHTML = (str: string) => {
  * Renders the detailed results based on the decoded information.
  * Handles fatal errors, valid results, checksum errors, and missing checksums.
  */
-function ResultContent({ result, locale = 'nl' }: { result: DecodedInfo, locale?: string; }) {
+function ResultContent({ result, translations, locale = 'nl' }: {
+    result: DecodedInfo,
+    translations?: ClientTranslations,
+    locale?: string;
+}) {
+
+    // Default translations in case none are provided - fallbacks
+    const t = (key: string, defaultValue: string): string => {
+        if (!translations) return defaultValue;
+
+        // Try to get from client translations
+        if (key.startsWith('client.decoder.')) {
+            const decoderKey = key.replace('client.decoder.', '');
+            return translations.client?.decoder?.[decoderKey] || defaultValue;
+        }
+        // Try to get from common translations
+        else if (key.startsWith('common.')) {
+            const commonKey = key.replace('common.', '') as keyof typeof translations.common;
+            // Type assertion using keyof to tell TypeScript this is a valid key
+            if (commonKey === 'male' || commonKey === 'female' || commonKey === 'notAvailable') {
+                return translations.common[commonKey] || defaultValue;
+            }
+            return defaultValue;
+        }
+
+        return defaultValue;
+    };
 
     // --- Fatal Error Case ---
     if (result.status === 'error') {
         let errorMessage: string;
         switch (result.errorKey) {
-            case "INVALID_INPUT_TYPE": errorMessage = "Ongeldig invoertype."; break;
-            case "INVALID_LENGTH": errorMessage = `Ongeldige lengte. Verwacht 9 of 11 cijfers, maar ${result.lengthFound ?? 'onbekend aantal'} ontvangen.`; break;
-            case "INVALID_FORMAT": errorMessage = "Ongeldig formaat. Mag enkel cijfers bevatten."; break;
-            case "INVALID_SEQUENCE": errorMessage = `Ongeldig reeksnummer (${result.invalidSequenceValue ?? 'N/B'}). Moet tussen 001 en 998 liggen.`; break;
-            case "INVALID_DATE":
-                const dateStr = result.dateParts ? `${result.dateParts.dd}/${result.dateParts.mm}/${result.dateParts.year ?? result.dateParts.yy}` : 'N/B';
-                errorMessage = `Ongeldige datum (${dateStr}). De datum bestaat niet in de kalender.`;
+            case "INVALID_INPUT_TYPE":
+                errorMessage = t('client.decoder.errorInvalidType', "Invalid input type.");
                 break;
-            default: errorMessage = "Onbekende validatiefout."; break;
+            case "INVALID_LENGTH":
+                errorMessage = `${t('client.decoder.errorInvalidLength', "Invalid length. Expected 9 or 11 digits, but")} ${result.lengthFound ?? t('client.decoder.unknownCount', 'unknown count')} ${t('client.decoder.received', 'received')}.`;
+                break;
+            case "INVALID_FORMAT":
+                errorMessage = t('client.decoder.errorInvalidFormat', "Invalid format. Must contain only digits.");
+                break;
+            case "INVALID_SEQUENCE":
+                errorMessage = `${t('client.decoder.errorInvalidSequence', "Invalid sequence number")} (${result.invalidSequenceValue ?? 'N/A'}). ${t('client.decoder.errorInvalidSequenceRange', "Must be between 001 and 998.")}`;
+                break;
+            case "INVALID_DATE":
+                const dateStr = result.dateParts ? `${result.dateParts.dd}/${result.dateParts.mm}/${result.dateParts.year ?? result.dateParts.yy}` : 'N/A';
+                errorMessage = `${t('client.decoder.errorInvalidDate', "Invalid date")} (${dateStr}). ${t('client.decoder.errorDateNotExist', "The date does not exist in the calendar.")}`;
+                break;
+            default:
+                errorMessage = t('client.decoder.errorUnknown', "Unknown validation error.");
+                break;
         }
         // Display centered error message
         return (
@@ -108,42 +126,50 @@ function ResultContent({ result, locale = 'nl' }: { result: DecodedInfo, locale?
     const res = result as DecodedInfoResult;
 
     // Calculate derived display values
-    const genderText = res.simulatedGenderKey === "common.male" ? "Man" : "Vrouw";
+    let genderText = '';
+    if (res.simulatedGenderKey === "common.male") {
+        genderText = t('common.male', "Male (Simulated)");
+    } else {
+        genderText = t('common.female', "Female (Simulated)");
+    }
+
     const birthOrder = res.birthOrder;
     const suffix = getPositionSuffix(birthOrder!, locale); // Use non-null assertion assuming birthOrder is always present here
-    const birthOrderMessage = birthOrder ? `De ${birthOrder}${suffix} ${genderText.toLowerCase()} geregistreerd op die dag` : "N/B";
+    const birthOrderMessage = birthOrder
+        ? `${t('client.decoder.theNth', "The")} ${birthOrder}${suffix} ${genderText.toLowerCase()} ${t('client.decoder.registeredThatDay', "registered that day")}`
+        : t('common.notAvailable', "N/A");
 
     // Determine checksum display text, class, and notes based on status
     let checksumText: string, checksumClass: string, checksumNote = "";
     switch (res.status) {
         case 'valid':
-            checksumText = "Correct";
+            checksumText = t('client.decoder.checksumCorrect', "Correct");
             checksumClass = "text-green-800";
             break;
         case 'checksum_invalid':
-            checksumText = "Ongeldig";
+            checksumText = t('client.decoder.checksumInvalid', "Invalid");
             checksumClass = "text-red-700 font-bold";
             if (res.algorithmUsed === 'auto') {
                 const exp19 = res.expectedChecksum19xx !== undefined ? String(res.expectedChecksum19xx).padStart(2, '0') : '??';
                 const exp20 = res.expectedChecksum20xx !== undefined ? String(res.expectedChecksum20xx).padStart(2, '0') : '??';
-                checksumNote = `(Verwacht: ${exp20} voor 20xx of ${exp19} voor 19xx)`;
+                checksumNote = `(${t('client.decoder.checksumExpected', "Expected")}: ${exp20} ${t('client.decoder.checksumForYear', "for")} 20xx ${t('client.decoder.or', "or")} ${exp19} ${t('client.decoder.checksumForYear', "for")} 19xx)`;
             } else if (res.calculatedChecksum !== undefined && res.birthYear !== undefined) {
-                checksumNote = `(Verwacht: ${String(res.calculatedChecksum).padStart(2, '0')} voor ${res.birthYear})`;
+                checksumNote = `(${t('client.decoder.checksumExpected', "Expected")}: ${String(res.calculatedChecksum).padStart(2, '0')} ${t('client.decoder.checksumForYear', "for")} ${res.birthYear})`;
             }
             break;
         case 'checksum_missing':
-            checksumText = "Ontbreekt";
+            checksumText = t('client.decoder.checksumMissing', "Missing");
             checksumClass = "text-orange-600 font-bold";
             if (res.algorithmUsed === 'auto') {
                 const exp19 = res.expectedChecksum19xx !== undefined ? String(res.expectedChecksum19xx).padStart(2, '0') : '??';
                 const exp20 = res.expectedChecksum20xx !== undefined ? String(res.expectedChecksum20xx).padStart(2, '0') : '??';
-                checksumNote = `(Zou ${exp19} zijn voor 19xx of ${exp20} voor 20xx)`;
+                checksumNote = `(${t('client.decoder.checksumWouldBe', "Would be")} ${exp19} ${t('client.decoder.checksumForYear', "for")} 19xx ${t('client.decoder.or', "or")} ${exp20} ${t('client.decoder.checksumForYear', "for")} 20xx)`;
             } else if (res.calculatedChecksum !== undefined && res.birthYear !== undefined) {
-                checksumNote = `(Zou ${String(res.calculatedChecksum).padStart(2, '0')} zijn voor ${res.birthYear})`;
+                checksumNote = `(${t('client.decoder.checksumWouldBe', "Would be")} ${String(res.calculatedChecksum).padStart(2, '0')} ${t('client.decoder.checksumForYear', "for")} ${res.birthYear})`;
             }
             break;
         default: // Fallback
-            checksumText = "N/B";
+            checksumText = t('common.notAvailable', "N/A");
             checksumClass = "text-gray-500";
             break;
     }
@@ -153,7 +179,7 @@ function ResultContent({ result, locale = 'nl' }: { result: DecodedInfo, locale?
         <div className="space-y-3 text-sm text-gray-800 font-mono">
             {/* Input Value */}
             <div className="flex">
-                <span className="font-medium text-gray-900 w-40 sm:w-48 flex-shrink-0">Invoer:</span>
+                <span className="font-medium text-gray-900 w-40 sm:w-48 flex-shrink-0">{t('client.decoder.input', "Input:")}:</span>
                 <span className="break-all">{res.input}</span>
             </div>
 
@@ -161,16 +187,16 @@ function ResultContent({ result, locale = 'nl' }: { result: DecodedInfo, locale?
             {res.components && (
                 <>
                     <div className="flex">
-                        <span className="font-medium text-gray-900 w-40 sm:w-48 flex-shrink-0">Datumdeel (JJMMDD):</span>
-                        <span>{res.components.datePart ?? 'N/B'}</span>
+                        <span className="font-medium text-gray-900 w-40 sm:w-48 flex-shrink-0">{t('client.decoder.datePart', "Date Part (YYMMDD):")}:</span>
+                        <span>{res.components.datePart ?? t('common.notAvailable', "N/A")}</span>
                     </div>
                     <div className="flex">
-                        <span className="font-medium text-gray-900 w-40 sm:w-48 flex-shrink-0">Reeksnummer (SSS):</span>
-                        <span>{res.components.sequencePart ?? 'N/B'}</span>
+                        <span className="font-medium text-gray-900 w-40 sm:w-48 flex-shrink-0">{t('client.decoder.sequencePart', "Sequence Number (SSS):")}:</span>
+                        <span>{res.components.sequencePart ?? t('common.notAvailable', "N/A")}</span>
                     </div>
                     <div className="flex">
-                        <span className="font-medium text-gray-900 w-40 sm:w-48 flex-shrink-0">Controlegetal (CC):</span>
-                        <span>{res.components.checksumPart ?? <span className="text-orange-600">Ontbreekt</span>}</span>
+                        <span className="font-medium text-gray-900 w-40 sm:w-48 flex-shrink-0">{t('client.decoder.checksumPart', "Checksum (CC):")}:</span>
+                        <span>{res.components.checksumPart ?? <span className="text-orange-600">{t('client.decoder.checksumMissing', "Missing")}</span>}</span>
                     </div>
                     <hr className={
                         res.status === 'valid' ? "border-green-200" :
@@ -184,41 +210,47 @@ function ResultContent({ result, locale = 'nl' }: { result: DecodedInfo, locale?
 
             {/* Algorithm Setting */}
             <div className="flex">
-                <span className="font-medium text-gray-900 w-40 sm:w-48 flex-shrink-0">Algoritme Instelling:</span>
-                <span className="font-semibold">{algorithmDisplayNames[res.algorithmUsed]}</span>
+                <span className="font-medium text-gray-900 w-40 sm:w-48 flex-shrink-0">{t('client.decoder.algorithm', "Algorithm Setting:")}</span>
+                <span className="font-semibold">
+                    {res.algorithmUsed === 'auto'
+                        ? t('client.decoder.algorithmAuto', "Automatic (19xx/20xx)")
+                        : res.algorithmUsed === '19xx'
+                            ? t('client.decoder.algorithm19xx', "Force 19xx")
+                            : t('client.decoder.algorithm20xx', "Force 20xx")}
+                </span>
             </div>
 
             {/* Checksum Suggestion */}
             {res.algorithmUsed === 'auto' && res.suggestedAlgorithm && (
                 <div className="flex">
-                    <span className="font-medium text-gray-900 w-40 sm:w-48 flex-shrink-0">Checksum Suggestie:</span>
-                    <span className="text-gray-600">Geldig voor {algorithmSuggestionNames[res.suggestedAlgorithm]}</span>
+                    <span className="font-medium text-gray-900 w-40 sm:w-48 flex-shrink-0">{t('client.decoder.checksumSuggestion', "Checksum Suggestion:")}</span>
+                    <span className="text-gray-600">{t('client.decoder.validFor', "Valid for")} {res.suggestedAlgorithm}</span>
                 </div>
             )}
 
             {/* Checksum Status */}
             <div className="flex items-center">
-                <span className="font-medium text-gray-900 w-40 sm:w-48 flex-shrink-0">Controlegetal:</span>
+                <span className="font-medium text-gray-900 w-40 sm:w-48 flex-shrink-0">{t('client.decoder.checksumStatus', "Checksum:")}</span>
                 <span className={checksumClass}>{checksumText}</span>
                 {checksumNote && <span className="text-xs text-gray-500 ml-2">{checksumNote}</span>}
             </div>
 
             {/* Birth Date */}
             <div className="flex">
-                <span className="font-medium text-gray-900 w-40 sm:w-48 flex-shrink-0">Geboortedatum:</span>
-                <span>{res.simulatedBirthDate ?? "N/B"}</span>
-                {res.guessedYear && <span className="text-xs text-orange-600 ml-2">(Jaar aangenomen)</span>}
+                <span className="font-medium text-gray-900 w-40 sm:w-48 flex-shrink-0">{t('client.decoder.birthDate', "Birth Date:")}</span>
+                <span>{res.simulatedBirthDate ?? t('common.notAvailable', "N/A")}</span>
+                {res.guessedYear && <span className="text-xs text-orange-600 ml-2">({t('client.decoder.yearAssumed', "Year is assumed.")})</span>}
             </div>
 
             {/* Gender */}
             <div className="flex">
-                <span className="font-medium text-gray-900 w-40 sm:w-48 flex-shrink-0">Geslacht:</span>
+                <span className="font-medium text-gray-900 w-40 sm:w-48 flex-shrink-0">{t('client.decoder.gender', "Gender:")}</span>
                 <span>{genderText}</span>
             </div>
 
             {/* Birth Order */}
             <div className="flex">
-                <span className="font-medium text-gray-900 w-40 sm:w-48 flex-shrink-0">Geboortevolgorde:</span>
+                <span className="font-medium text-gray-900 w-40 sm:w-48 flex-shrink-0">{t('client.decoder.birthOrder', "Birth Order:")}</span>
                 <span>{birthOrderMessage}</span>
             </div>
 
@@ -227,30 +259,85 @@ function ResultContent({ result, locale = 'nl' }: { result: DecodedInfo, locale?
                 res.status === 'checksum_invalid' ? 'text-red-600' :
                     'text-orange-600' // checksum_missing
                 } pt-2 text-center`}>
-                {res.status === 'checksum_invalid' && <strong>LET OP: Controlegetal is ongeldig! </strong>}
-                {res.status === 'checksum_missing' && <strong>LET OP: Controlegetal ontbreekt! Validatie onmogelijk. </strong>}
-                {res.guessedYear && <strong>Jaar is aangenomen. </strong>}
-                Afleiding gebaseerd op standaard algoritmes, enkel ter informatie.
+                {res.status === 'checksum_invalid' && <strong>{t('client.decoder.cautionChecksumInvalid', "CAUTION: Checksum is invalid!")} </strong>}
+                {res.status === 'checksum_missing' && <strong>{t('client.decoder.cautionChecksumMissing', "CAUTION: Checksum is missing! Validation impossible.")} </strong>}
+                {res.guessedYear && <strong>{t('client.decoder.yearAssumed', "Year is assumed.")} </strong>}
+                {t('client.decoder.disclaimer', "Derivation based on standard algorithms, for informational purposes only.")}
             </p>
         </div>
     );
 }
 
+/**
+ * Maps algorithm keys to their user-friendly display names.
+ */
+function getAlgorithmDisplayName(algorithmKey: InszAlgorithm, translations?: ClientTranslations): string {
+    if (!translations) {
+        // Default fallbacks
+        const defaultNames: Record<InszAlgorithm, string> = {
+            'auto': 'Automatic (19xx/20xx)',
+            '19xx': 'Force 19xx',
+            '20xx': 'Force 20xx'
+        };
+        return defaultNames[algorithmKey];
+    }
+
+    const t = translations.client?.decoder;
+    if (!t) return algorithmKey; // Fallback if translations not available
+
+    switch (algorithmKey) {
+        case 'auto': return t.algorithmAuto || 'Automatic (19xx/20xx)';
+        case '19xx': return t.algorithm19xx || 'Force 19xx';
+        case '20xx': return t.algorithm20xx || 'Force 20xx';
+        default: return algorithmKey;
+    }
+}
 
 // --- Main Wrapper Component ---
 // Correctly places id='decode-root' on the main container.
-export function InszDecoder({ }: ClientDecoderProps) {
+export function InszDecoder({ translations, locale = 'nl' }: ClientDecoderProps) {
+    // Serialize the translations and locale as data attributes
+    const serializedTranslations = translations ? JSON.stringify(translations) : '';
+    
     return (
-        <div id='decode-root' className="w-full"> {/* ID is here, component takes full width */}
-            {/* Renders the client-side component which contains dropdown and cards */}
-            <ClientInszDecoder />
+        <div 
+            id='decode-root' 
+            className="w-full"
+            data-ssr="true"
+            data-translations={serializedTranslations}
+            data-locale={locale}
+        >
+            <ClientInszDecoder translations={translations} locale={locale} />
         </div>
     );
 }
 
 // --- Core Client Decoder Component ---
 // Contains algorithm state, dropdown, input, and output logic using layered input.
-export function ClientInszDecoder({ /* locale = 'nl' */ }: ClientDecoderProps) {
+export function ClientInszDecoder({ translations, locale = 'nl' }: ClientDecoderProps) {
+    // Helper function to get translated text
+
+    const t = (key: string, defaultValue: string): string => {
+        if (!translations) return defaultValue;
+
+        // Try to get from client translations
+        if (key.startsWith('client.decoder.')) {
+            const decoderKey = key.replace('client.decoder.', '');
+            return translations.client?.decoder?.[decoderKey] || defaultValue;
+        }
+        // Try to get from common translations
+        else if (key.startsWith('common.')) {
+            const commonKey = key.replace('common.', '') as keyof typeof translations.common;
+            // Type assertion using keyof to tell TypeScript this is a valid key
+            if (commonKey === 'male' || commonKey === 'female' || commonKey === 'notAvailable') {
+                return translations.common[commonKey] || defaultValue;
+            }
+            return defaultValue;
+        }
+
+        return defaultValue;
+    };
+
     // --- State ---
     const [inputValue, setInputValue] = useState<string>(''); // Holds the PLAIN TEXT value (digits only)
     const [debouncedValue, setDebouncedValue] = useState<string>(inputValue);
@@ -323,11 +410,11 @@ export function ClientInszDecoder({ /* locale = 'nl' */ }: ClientDecoderProps) {
 
         // Add a non-breaking space ONLY if html has content to prevent collapse
         if (html) {
-            html += ' ';
+            html += ' ';
         } else {
             // If input is empty, ensure backdrop still occupies space correctly
             // An non-breaking space ensures height is maintained based on line-height
-            html = ' ';
+            html = ' ';
         }
 
         return html;
@@ -364,7 +451,9 @@ export function ClientInszDecoder({ /* locale = 'nl' */ }: ClientDecoderProps) {
             {/* Algorithm Selection Dropdown */}
             <div className="mb-4 flex justify-center">
                 <div className="flex items-center space-x-2">
-                    <label htmlFor="insz-algorithm" className="text-sm font-medium text-gray-700"> Algoritme: </label>
+                    <label htmlFor="insz-algorithm" className="text-sm font-medium text-gray-700">
+                        {t('client.decoder.selectAlgorithm', 'Algorithm:')}
+                    </label>
                     <select
                         id="insz-algorithm"
                         name="insz-algorithm"
@@ -372,9 +461,9 @@ export function ClientInszDecoder({ /* locale = 'nl' */ }: ClientDecoderProps) {
                         value={selectedAlgorithm}
                         onChange={handleAlgorithmChange}
                     >
-                        <option value="auto">Automatisch (19xx/20xx)</option>
-                        <option value="19xx">Forceer 19xx</option>
-                        <option value="20xx">Forceer 20xx</option>
+                        <option value="auto">{t('client.decoder.algorithmAuto', 'Automatic (19xx/20xx)')}</option>
+                        <option value="19xx">{t('client.decoder.algorithm19xx', 'Force 19xx')}</option>
+                        <option value="20xx">{t('client.decoder.algorithm20xx', 'Force 20xx')}</option>
                     </select>
                 </div>
             </div>
@@ -385,12 +474,16 @@ export function ClientInszDecoder({ /* locale = 'nl' */ }: ClientDecoderProps) {
                 {/* Input Card - Layered Approach */}
                 <div className="bg-white shadow-lg rounded-xl overflow-hidden border border-gray-200 flex flex-col">
                     <div className="bg-gray-50 p-3 border-b border-gray-200">
-                        <h2 className="text-lg font-semibold text-gray-800">Decoder Rijksregisternummer / NISS</h2>
+                        <h2 className="text-lg font-semibold text-gray-800">
+                            {t('client.decoder.decoderTitle', 'Decoder National Register Number / NISS')}
+                        </h2>
                     </div>
                     <div className={`p-4 sm:p-6 flex-grow flex flex-col ${resultContainerClass}`}>
                         {/* Relative container for positioning backdrop and textarea */}
                         <div className="relative flex-grow">
-                            <label htmlFor="insz-client-textarea" className="sr-only"> Decoder Rijksregisternummer / NISS </label>
+                            <label htmlFor="insz-client-textarea" className="sr-only">
+                                {t('client.decoder.decoderTitle', 'Decoder National Register Number / NISS')}
+                            </label>
 
                             {/* Background div for displaying colors */}
                             <div
@@ -411,7 +504,7 @@ export function ClientInszDecoder({ /* locale = 'nl' */ }: ClientDecoderProps) {
                                 className={textareaClasses} // Use defined classes
                                 // Force text transparency using inline style - IMPORTANT
                                 style={{ color: 'transparent' }}
-                                placeholder="Voer 9 of 11 cijfers in..."
+                                placeholder={t('client.decoder.enterNumber', "Enter a 9 or 11-digit national register number.")}
                                 rows={3} // Suggest initial rows, height controlled by h-48
                                 spellCheck={false}
                                 autoComplete="off"
@@ -419,13 +512,13 @@ export function ClientInszDecoder({ /* locale = 'nl' */ }: ClientDecoderProps) {
 
                         </div>
                         {/* Disabled button */}
-                        <div className="mt-4 text-center opacity-50 cursor-not-allowed" title="Resultaten worden live bijgewerkt">
+                        <div className="mt-4 text-center opacity-50 cursor-not-allowed" title="Results are updated live">
                             <button
                                 type="button"
                                 disabled
                                 className="inline-flex justify-center items-center py-2.5 px-8 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-gray-400 w-full sm:w-auto"
                             >
-                                Decoderen
+                                {t('decode.buttonText', 'Decode')}
                             </button>
                         </div>
                     </div>
@@ -434,19 +527,21 @@ export function ClientInszDecoder({ /* locale = 'nl' */ }: ClientDecoderProps) {
                 {/* Output Card */}
                 <div className="bg-white shadow-lg rounded-xl overflow-hidden border border-gray-200 flex flex-col">
                     <div className="bg-gray-50 p-3 border-b border-gray-200">
-                        <h2 className="text-lg font-semibold text-gray-800">Resultaten</h2>
+                        <h2 className="text-lg font-semibold text-gray-800">
+                            {t('decode.resultsTitle', 'Results')}
+                        </h2>
                     </div>
                     {/* Content area with dynamic background/border */}
                     <div className={`p-4 sm:p-6 flex-grow rounded-b-xl border ${resultContainerClass}`}>
                         {/* Initial placeholder text */}
                         {!decodedResult && !debouncedValue && (
                             <div className="h-full flex items-center justify-center text-center text-gray-500">
-                                <p>Voer een 9- of 11-cijferig rijksregisternummer in.</p>
+                                <p>{t('client.decoder.enterNumber', "Enter a 9 or 11-digit national register number.")}</p>
                             </div>
                         )}
                         {/* Render the actual results or error using the ResultContent component */}
                         {decodedResult && (
-                            <ResultContent result={decodedResult} /* locale={locale} */ />
+                            <ResultContent result={decodedResult} translations={translations} locale={locale} />
                         )}
                     </div>
                 </div>

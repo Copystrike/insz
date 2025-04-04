@@ -39,6 +39,27 @@ export function createT(translations: AppTranslations): TFunction {
     };
 }
 
+// Type for client translations - a subset of the full translations
+export type ClientTranslations = {
+    langCode: string;
+    client: {
+        decoder: Record<string, string>;
+    };
+    common: {
+        male: string;
+        female: string;
+        notAvailable: string;
+    };
+};
+
+// Function to extract only client-side translations
+export function extractClientTranslations(translations: AppTranslations): ClientTranslations {
+    return {
+        langCode: translations.langCode,
+        client: translations.client,
+        common: translations.common
+    };
+}
 
 // Helper type for decrementing depth (Prev)
 type Prev = [never, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];

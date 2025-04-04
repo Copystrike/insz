@@ -1,20 +1,23 @@
 import type { FC } from 'hono/jsx';
 import type { TFunction } from '../utils/i18n';
-import { Tml } from '../utils/i18n';
+import { Tml, extractClientTranslations } from '../utils/i18n';
 import { twindVirtualSheet } from '..';
 import { create } from 'twind';
 import { InszDecoder } from '../components/client/decoder.client';
-
+import type { AppTranslations } from '../locales/en';
 
 interface DecodePageProps {
     t: TFunction;
     lang: string;
     inputValue?: string;
+    translations: AppTranslations;
 }
 
-const DecodePage: FC<DecodePageProps> = ({ t, lang, inputValue = '' }) => {
+const DecodePage: FC<DecodePageProps> = ({ t, lang, inputValue = '', translations }) => {
     const { tw } = create({ sheet: twindVirtualSheet });
-
+    
+    // Extract only the client-side translations to pass to the client component
+    const clientTranslations = extractClientTranslations(translations);
 
     return (
         <div className={tw`container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12`}>
@@ -29,8 +32,11 @@ const DecodePage: FC<DecodePageProps> = ({ t, lang, inputValue = '' }) => {
             {/* --- END DISCLAIMER --- */}
 
 
-            {/* End of SSR Placeholder */}
-            <InszDecoder />
+            {/* Pass translations and locale to the client component */}
+            <InszDecoder 
+                translations={clientTranslations}
+                locale={lang}
+            />
 
         </div >
     );
